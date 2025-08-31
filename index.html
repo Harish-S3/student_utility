@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Utility Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --secondary: #3f37c9;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --danger: #f72585;
+      --gray: #6c757d;
+      --bg-light: #f4f6f8;
+      --bg-dark: #121212;
+      --card-light: #ffffff;
+      --card-dark: #1e1e1e;
+      --nav-height: 60px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-light);
+      color: var(--dark);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--light);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1.5rem 0;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .toggle-dark {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 100;
+    }
+
+    .toggle-dark button {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .toggle-dark button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    body.dark-mode .toggle-dark button {
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    /* New Navigation Styles */
+    nav {
+      background-color: var(--primary-dark);
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      height: var(--nav-height);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .logo-container i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    nav button:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: white;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    nav button:hover:after,
+    nav button.active-tab:after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    nav button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    nav button.active-tab {
+      background: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
+
+    nav button i {
+      font-size: 1.1rem;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: absolute;
+      top: var(--nav-height);
+      right: 0;
+      background: var(--primary-dark);
+      width: 100%;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+      z-index: 8;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 8px 8px;
+    }
+
+    .dropdown-menu.open {
+      max-height: 500px;
+    }
+
+    .dropdown-menu button {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.5rem;
+      border-radius: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .dropdown-menu button:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-menu button:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    /* Section styles */
+    section {
+      display: none;
+      padding: 2rem 0;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--primary-dark);
+    }
+
+    body.dark-mode .section-title {
+      color: var(--success);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: var(--card-light);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-mode .card {
+      background: var(--card-dark);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .card:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.dark-mode .card h3 {
+      color: var(--success);
+    }
+
+    input, button, select, textarea {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+      background: #2d2d2d;
+      border-color: #444;
+      color: white;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    button.secondary {
+      background-color: var(--gray);
+    }
+
+    button.success {
+      background-color: var(--success);
+    }
+
+    button.warning {
+      background-color: var(--warning);
+    }
+
+    button.danger {
+      background-color: var(--danger);
+    }
+
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      background: rgba(67, 97, 238, 0.1);
+      font-weight: 600;
+    }
+
+    body.dark-mode .result {
+      background: rgba(76, 201, 240, 0.1);
+    }
+
+    .flex-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .flex-group button {
+      flex: 1;
+    }
+
+    .subject-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .subject-item input {
+      flex: 1;
+    }
+
+    .subject-item button {
+      width: auto;
+      padding: 0.5rem;
+    }
+
+    meter {
+      width: 100%;
+      height: 20px;
+      margin-top: 1rem;
+    }
+
+    .game-container {
+      background: rgba(67, 97, 238, 0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    body.dark-mode .game-container {
+      background: rgba(76, 201, 240, 0.05);
+    }
+
+    .memory-game {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .memory-card {
+      aspect-ratio: 1;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .memory-card.flipped {
+      background: white;
+      color: var(--primary);
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.matched {
+      background: var(--success);
+      cursor: default;
+    }
+
+    .quiz-option {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      background: rgba(67, 97, 238, 0.1);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-option:hover {
+      background: rgba(67, 97, 238, 0.2);
+    }
+
+    .quiz-option.correct {
+      background: rgba(76, 201, 240, 0.3);
+      border-left: 4px solid var(--success);
+    }
+
+    .quiz-option.incorrect {
+      background: rgba(247, 37, 133, 0.2);
+      border-left: 4px solid var(--danger);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+      color: var(--primary);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .roadmap-category {
+      margin-bottom: 2rem;
+    }
+
+    .roadmap-category h4 {
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    body.dark-mode .roadmap-category h4 {
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    .roadmap-list {
+      list-style-type: none;
+    }
+
+    .roadmap-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .roadmap-list li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+
+    body.dark-mode .roadmap-list li:before {
+      color: var(--success);
+    }
+
+    .resource-link {
+      display: block;
+      margin-top: 1rem;
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .resource-link {
+      color: var(--success);
+    }
+
+    .resource-link:hover {
+      text-decoration: underline;
+    }
+
+    .note-card {
+      background: rgba(248, 150, 30, 0.1);
+      border-left: 4px solid var(--warning);
+      padding: 1rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1rem 0;
+    }
+
+    body.dark-mode .note-card {
+      background: rgba(248, 150, 30, 0.2);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: var(--card-light);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    body.dark-mode .feature-card {
+      background: var(--card-dark);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .feature-card:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    body.dark-mode .feature-icon {
+      color: var(--success);
+    }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+
+    footer p {
+      margin-bottom: 0.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .social-links a:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .nav-menu {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flex-group {
+        flex-direction: column;
+      }
+
+      .flex-group button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle-dark">
+    <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+  </div>
+  
+  <header>
+    <div class="container">
+      <h1><i class="fas fa-graduation-cap"></i> Student Utility Hub</h1>
+      <p>Your all-in-one solution for academic tools and resources</p>
+    </div>
+  </header>
+
+  <nav>
+    <div class="container nav-container">
+      <div class="logo-container">
+        <i class="fas fa-book-open"></i>
+        <span>Student Tools</span>
+      </div>
+      
+      <div class="nav-menu" id="navMenu">
+        <button onclick="showSection('dashboard')" class="active-tab"><i class="fas fa-home"></i> Dashboard</button>
+        <button onclick="showSection('cgpa')"><i class="fas fa-calculator"></i> CGPA</button>
+        <button onclick="showSection('bmi')"><i class="fas fa-weight"></i> BMI</button>
+        <button onclick="showSection('games')"><i class="fas fa-gamepad"></i> Games</button>
+        <button onclick="showSection('age')"><i class="fas fa-birthday-cake"></i> Age</button>
+        <button onclick="showSection('roadmaps')"><i class="fas fa-road"></i> Roadmaps</button>
+        <button onclick="showSection('pomodoro')"><i class="fas fa-clock"></i> Timer</button>
+        <button onclick="showSection('notes')"><i class="fas fa-sticky-note"></i> Notes</button>
+      </div>
+      
+      <button class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" id="dropdownMenu">
+      <button onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</button>
+      <button onclick="showSection('cgpa')"><i class="fas fa-calculator"></i> CGPA Calculator</button>
+      <button onclick="showSection('bmi')"><i class="fas fa-weight"></i> BMI Calculator</button>
+      <button onclick="showSection('games')"><i class="fas fa-gamepad"></i> Mini Games</button>
+      <button onclick="showSection('age')"><i class="fas fa-birthday-cake"></i> Age Calculator</button>
+      <button onclick="showSection('roadmaps')"><i class="fas fa-road"></i> Study Roadmaps</button>
+      <button onclick="showSection('pomodoro')"><i class="fas fa-clock"></i> Pomodoro Timer</button>
+      <button onclick="showSection('notes')"><i class="fas fa-sticky-note"></i> Quick Notes</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="active">
+      <h2 class="section-title">Welcome to Student Utility Hub</h2>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+          <h3>Academic Calculators</h3>
+          <p>Calculate your CGPA, GPA, and other academic metrics with ease.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-road"></i></div>
+          <h3>Study Roadmaps</h3>
+          <p>Structured learning paths for various subjects and technologies.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
+          <h3>Brain Games</h3>
+          <p>Take a break with fun mini-games to refresh your mind.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-clock"></i></div>
+          <h3>Productivity Tools</h3>
+          <p>Pomodoro timer and note-taking to boost your productivity.</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-lightbulb"></i> Quick Tips</h3>
+        <ul>
+          <li>Use the Pomodoro technique (25 min work + 5 min break) for better focus</li>
+          <li>Regular exercise improves memory and cognitive function</li>
+          <li>Active recall and spaced repetition are the most effective study techniques</li>
+          <li>Stay hydrated - even mild dehydration can impair concentration</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CGPA Calculator Section -->
+    <section id="cgpa">
+      <h2 class="section-title"><i class="fas fa-calculator"></i> CGPA Calculator</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-graduation-cap"></i> Semester GPA</h3>
+          <select id="cgpaMode" onchange="switchCgpaMode()">
+            <option value="sem">Semester-wise</option>
+            <option value="subject">Subject-wise</option>
+          </select>
+          <div id="cgpaInputs">
+            <div class="subject-item">
+              <input type="number" step="0.01" min="0" max="4" placeholder="Semester 1 GPA" />
+              <button class="danger" onclick="removeField(this)"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="flex-group">
+            <button onclick="addGpaField()"><i class="fas fa-plus"></i> Add Field</button>
+            <button onclick="calculateCGPA()"><i class="fas fa-calculate"></i> Calculate</button>
+          </div>
+          <div class="result" id="cgpaResult"></div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-info-circle"></i> GPA Scale Reference</h3>
+          <table style="width:100%; border-collapse: collapse;">
+            <tr>
+              <th style="text-align:left; padding: 0.5rem; border-bottom:1px solid #ddd;">Grade</th>
+              <th style="text-align:left; padding: 0.5rem; border-bottom:1px solid #ddd;">Points</th>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">A (Excellent)</td>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">10.0</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">B (Good)</td>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">9.0</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">C (Average)</td>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">8.0</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">D (Poor)</td>
+              <td style="padding: 0.5rem; border-bottom:1px solid #ddd;">7.0</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem;">F (Fail)</td>
+              <td style="padding: 0.5rem;">5.0</td>
+            </tr>
+          </table>
+          
+          <div class="note-card">
+            <p><strong>Note:</strong> Some institutions use different grading scales. Always check with your university's specific grading policy.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BMI Calculator Section -->
+    <section id="bmi">
+      <h2 class="section-title"><i class="fas fa-weight"></i> BMI Calculator</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-calculator"></i> Calculate Your BMI</h3>
+          <div class="flex-group">
+            <input type="number" id="height" placeholder="Height (cm)" min="100" max="250" />
+            <input type="number" id="weight" placeholder="Weight (kg)" min="30" max="300" />
+          </div>
+          <button onclick="calculateBMI()"><i class="fas fa-calculate"></i> Calculate BMI</button>
+          <div class="result" id="bmiResult"></div>
+          <meter id="bmiMeter" min="10" max="40" low="18.5" high="25" optimum="22" value="0"></meter>
+          
+          <div id="bmiChart" style="margin-top: 1rem;">
+            <p><strong>BMI Categories:</strong></p>
+            <ul>
+              <li>Underweight: &lt; 18.5</li>
+              <li>Normal weight: 18.5–24.9</li>
+              <li>Overweight: 25–29.9</li>
+              <li>Obesity: ≥ 30</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-heartbeat"></i> Health Tips</h3>
+          <p>Maintaining a healthy BMI is important for overall well-being:</p>
+          <ul style="margin-top: 0.5rem;">
+            <li>Eat a balanced diet with plenty of fruits and vegetables</li>
+            <li>Stay physically active (at least 30 minutes daily)</li>
+            <li>Get adequate sleep (7-9 hours for adults)</li>
+            <li>Manage stress through meditation or hobbies</li>
+            <li>Stay hydrated (about 2 liters of water daily)</li>
+          </ul>
+          
+          <div class="note-card">
+            <p><strong>Note:</strong> BMI is a screening tool but doesn't diagnose body fatness or health. Athletes may have a high BMI due to muscle mass.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games">
+      <h2 class="section-title"><i class="fas fa-gamepad"></i> Mini Games</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-dice"></i> Choose a Game</h3>
+          <div class="flex-group">
+            <button onclick="showGame('guess')"><i class="fas fa-question"></i> Number Guess</button>
+            <button onclick="showGame('memory')"><i class="fas fa-brain"></i> Memory Game</button>
+          </div>
+          <div class="flex-group" style="margin-top: 0.5rem;">
+            <button onclick="showGame('quiz')"><i class="fas fa-question-circle"></i> Quick Quiz</button>
+            <button onclick="showGame('typing')"><i class="fas fa-keyboard"></i> Typing Test</button>
+          </div>
+          
+          <div id="gameContainer" class="game-container" style="min-height: 300px;"></div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-trophy"></i> Game Benefits</h3>
+          <p>Short gaming breaks can actually improve your studying:</p>
+          <ul style="margin-top: 0.5rem;">
+            <li>Enhances problem-solving skills</li>
+            <li>Improves memory and concentration</li>
+            <li>Reduces stress and prevents burnout</li>
+            <li>Boosts creativity and strategic thinking</li>
+            <li>Provides mental refreshment between study sessions</li>
+          </ul>
+          
+          <div class="note-card">
+            <p><strong>Tip:</strong> Limit gaming breaks to 5-10 minutes to maintain productivity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Age Calculator Section -->
+    <section id="age">
+      <h2 class="section-title"><i class="fas fa-birthday-cake"></i> Age Calculator</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-calculator"></i> Calculate Your Age</h3>
+          <input type="date" id="dob" max="" />
+          <button onclick="calculateAge()"><i class="fas fa-calculate"></i> Calculate Age</button>
+          <div class="result" id="ageResult"></div>
+          
+          <div id="ageStats" style="margin-top: 1rem; display: none;">
+            <p><strong>Your age statistics:</strong></p>
+            <ul id="ageStatsList"></ul>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-hourglass-half"></i> Time Management</h3>
+          <p>Effective time management is crucial for students:</p>
+          <ul style="margin-top: 0.5rem;">
+            <li>Prioritize tasks using the Eisenhower Matrix</li>
+            <li>Use the Pomodoro technique (25 min work + 5 min break)</li>
+            <li>Create a weekly schedule and stick to it</li>
+            <li>Set SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound)</li>
+            <li>Learn to say no to distractions and non-essential activities</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Study Roadmaps Section -->
+    <section id="roadmaps">
+      <h2 class="section-title"><i class="fas fa-road"></i> Study Roadmaps</h2>
+      
+      <div class="card">
+        <h3><i class="fas fa-search"></i> Choose a Subject</h3>
+        <div class="flex-group">
+          <button onclick="loadRoadmap('cs')"><i class="fas fa-laptop-code"></i> Computer Science</button>
+          <button onclick="loadRoadmap('ds')"><i class="fas fa-chart-bar"></i> Data Science</button>
+        </div>
+        <div class="flex-group" style="margin-top: 0.5rem;">
+          <button onclick="loadRoadmap('web')"><i class="fas fa-code"></i> Web Development</button>
+          <button onclick="loadRoadmap('mobile')"><i class="fas fa-mobile-alt"></i> Mobile Dev</button>
+        </div>
+        <div class="flex-group" style="margin-top: 0.5rem;">
+          <button onclick="loadRoadmap('math')"><i class="fas fa-square-root-alt"></i> Mathematics</button>
+          <button onclick="loadRoadmap('lang')"><i class="fas fa-language"></i> Languages</button>
+        </div>
+        
+        <div id="roadmap" style="margin-top: 2rem;"></div>
+      </div>
+    </section>
+
+    <!-- Pomodoro Timer Section -->
+    <section id="pomodoro">
+      <h2 class="section-title"><i class="fas fa-clock"></i> Pomodoro Timer</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-stopwatch"></i> Timer</h3>
+          <div class="timer" id="pomodoroTimer">25:00</div>
+          <div class="progress-bar">
+            <div class="progress" id="pomodoroProgress"></div>
+          </div>
+          <div class="flex-group">
+            <button onclick="startPomodoro()" id="pomodoroStart"><i class="fas fa-play"></i> Start</button>
+            <button onclick="pausePomodoro()" id="pomodoroPause" disabled><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="resetPomodoro()"><i class="fas fa-redo"></i> Reset</button>
+          </div>
+          <div style="text-align: center; margin-top: 1rem;">
+            <span id="pomodoroStatus">Ready to work!</span>
+            <span id="pomodoroCount" class="badge">0/4</span>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-info-circle"></i> Pomodoro Technique</h3>
+          <p>The Pomodoro Technique is a time management method:</p>
+          <ol style="margin-top: 0.5rem;">
+            <li>Choose a task to work on</li>
+            <li>Set timer to 25 minutes ("Pomodoro")</li>
+            <li>Work on the task until timer rings</li>
+            <li>Take a 5-minute short break</li>
+            <li>After 4 Pomodoros, take a 15-30 minute long break</li>
+          </ol>
+          
+          <div class="note-card">
+            <p><strong>Tip:</strong> Customize the timer durations to match your attention span (e.g., 50/10 for some people).</p>
+          </div>
+          
+          <div style="margin-top: 1rem;">
+            <label for="workDuration">Work Duration (minutes):</label>
+            <input type="number" id="workDuration" min="1" max="60" value="25" />
+            
+            <label for="breakDuration">Break Duration (minutes):</label>
+            <input type="number" id="breakDuration" min="1" max="30" value="5" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Notes Section -->
+    <section id="notes">
+      <h2 class="section-title"><i class="fas fa-sticky-note"></i> Quick Notes</h2>
+      
+      <div class="card-grid">
+        <div class="card">
+          <h3><i class="fas fa-edit"></i> Take Notes</h3>
+          <textarea id="noteInput" placeholder="Write your notes here..." rows="8"></textarea>
+          <div class="flex-group">
+            <button onclick="saveNote()"><i class="fas fa-save"></i> Save Note</button>
+            <button onclick="clearNote()" class="secondary"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          
+          <div style="margin-top: 1rem;">
+            <label for="noteTitle">Note Title:</label>
+            <input type="text" id="noteTitle" placeholder="Enter a title for your note" />
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3><i class="fas fa-book"></i> Saved Notes</h3>
+          <div id="savedNotes" style="max-height: 400px; overflow-y: auto;">
+            <p>No notes saved yet. Start by writing a note and clicking "Save Note".</p>
+          </div>
+          
+          <div class="note-card">
+            <p><strong>Note-taking Tips:</strong></p>
+            <ul>
+              <li>Use the Cornell method for lecture notes</li>
+              <li>Highlight key concepts and questions</li>
+              <li>Summarize in your own words</li>
+              <li>Review notes within 24 hours for better retention</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><i class="fas fa-graduation-cap"></i> Student Utility Hub</p>
+      <p>Your all-in-one academic companion</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      <p style="margin-top: 1rem; font-size: 0.9rem;">© 2023 Student Utility Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // DOM Elements
+    const sections = document.querySelectorAll('section');
+    const navButtons = document.querySelectorAll('nav button, .dropdown-menu button');
+    const hamburger = document.getElementById('hamburger');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    
+    // Set max date for age calculator (today)
+    document.getElementById('dob').max = new Date().toISOString().split('T')[0];
+    
+    // Show section function
+    function showSection(id) {
+      sections.forEach(section => section.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      
+      // Update active tab
+      navButtons.forEach(btn => btn.classList.remove('active-tab'));
+      event.currentTarget.classList.add('active-tab');
+      
+      // Special cases
+      if (id === 'games') {
+        showGame('menu');
+      }
+      
+      // Close dropdown menu on mobile after selection
+      if (dropdownMenu.classList.contains('open')) {
+        dropdownMenu.classList.remove('open');
+      }
+    }
+    
+    // Toggle dropdown menu
+    function toggleMenu() {
+      dropdownMenu.classList.toggle('open');
+    }
+    
+    hamburger.addEventListener('click', toggleMenu);
+    
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const btn = document.querySelector('.toggle-dark button');
+      if (document.body.classList.contains('dark-mode')) {
+        btn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+      } else {
+        btn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+      }
+      
+      // Save preference to localStorage
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+    
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      toggleDarkMode();
+    }
+    
+    // CGPA Calculator Functions
+    function switchCgpaMode() {
+      const mode = document.getElementById('cgpaMode').value;
+      const container = document.getElementById('cgpaInputs');
+      container.innerHTML = '';
+      addGpaField();
+    }
+    
+    function addGpaField() {
+      const container = document.getElementById('cgpaInputs');
+      const mode = document.getElementById('cgpaMode').value;
+      const div = document.createElement('div');
+      div.className = 'subject-item';
+      
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.step = '0.01';
+      input.min = '0';
+      input.max = '4';
+      input.placeholder = mode === 'sem' ? 
+        `Semester ${container.children.length + 1} GPA` : 
+        `Subject ${container.children.length + 1} Grade`;
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'danger';
+      deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+      deleteBtn.onclick = function() { removeField(this); };
+      
+      div.appendChild(input);
+      div.appendChild(deleteBtn);
+      container.appendChild(div);
+    }
+    
+    function removeField(btn) {
+      // Don't remove the last field
+      if (document.querySelectorAll('#cgpaInputs .subject-item').length > 1) {
+        btn.parentElement.remove();
+      } else {
+        alert('You need at least one input field!');
+      }
+    }
+    
+    function calculateCGPA() {
+      const inputs = document.querySelectorAll('#cgpaInputs input');
+      let sum = 0;
+      let count = 0;
+      
+      inputs.forEach(input => {
+        const val = parseFloat(input.value);
+        if (!isNaN(val) && val >= 0 && val <= 4) {
+          sum += val;
+          count++;
+        } else if (input.value !== '') {
+          alert(`Please enter a valid GPA between 0 and 4 for ${input.placeholder}`);
+          return;
+        }
+      });
+      
+      if (count > 0) {
+        const cgpa = (sum / count).toFixed(2);
+        let message = `Your CGPA: ${cgpa}`;
+        
+        // Add interpretation
+        if (cgpa >= 3.5) {
+          message += " (Excellent!)";
+        } else if (cgpa >= 3.0) {
+          message += " (Good)";
+        } else if (cgpa >= 2.0) {
+          message += " (Average)";
+        } else {
+          message += " (Needs Improvement)";
+        }
+        
+        document.getElementById('cgpaResult').innerHTML = message;
+      } else {
+        document.getElementById('cgpaResult').textContent = 'Please enter at least one valid GPA';
+      }
+    }
+    
+    // BMI Calculator Functions
+    function calculateBMI() {
+      const height = parseFloat(document.getElementById('height').value) / 100; // convert to meters
+      const weight = parseFloat(document.getElementById('weight').value);
+      
+      if (isNaN(height) || height <= 0 || isNaN(weight) || weight <= 0) {
+        document.getElementById('bmiResult').textContent = 'Please enter valid height and weight.';
+        return;
+      }
+      
+      const bmi = (weight / (height * height)).toFixed(1);
+      let status = '';
+      let advice = '';
+      
+      if (bmi < 18.5) {
+        status = 'Underweight';
+        advice = 'Consider consulting a nutritionist to gain weight healthily.';
+      } else if (bmi < 25) {
+        status = 'Normal weight';
+        advice = 'Great! Maintain your healthy lifestyle.';
+      } else if (bmi < 30) {
+        status = 'Overweight';
+        advice = 'Regular exercise and balanced diet can help reach a healthier weight.';
+      } else {
+        status = 'Obese';
+        advice = 'Consult a healthcare provider for a weight management plan.';
+      }
+      
+      document.getElementById('bmiResult').innerHTML = `
+        Your BMI is <strong>${bmi}</strong> (${status})<br>
+        <small>${advice}</small>
+      `;
+      document.getElementById('bmiMeter').value = bmi;
+    }
+    
+    // Games Functions
+    let secretNumber;
+    let memoryCards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let quizQuestions = [
+      {
+        question: "What is the capital of France?",
+        options: ["London", "Berlin", "Paris", "Madrid"],
+        answer: 2
+      },
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: 3
+      },
+      {
+        question: "What does HTML stand for?",
+        options: [
+          "Hypertext Markup Language",
+          "Hypertext Machine Language",
+          "Hyper Transfer Markup Language",
+          "Home Tool Markup Language"
+        ],
+        answer: 0
+      }
+    ];
+    let currentQuestion = 0;
+    let quizScore = 0;
+    let typingStartTime;
+    let typingText = "The quick brown fox jumps over the lazy dog. This sentence contains all the letters in the English alphabet.";
+    
+    function showGame(type) {
+      const container = document.getElementById('gameContainer');
+      
+      switch(type) {
+        case 'guess':
+          secretNumber = Math.floor(Math.random() * 100) + 1;
+          container.innerHTML = `
+            <h4><i class="fas fa-question-circle"></i> Number Guessing Game</h4>
+            <p>Guess a number between 1 and 100</p>
+            <input type="number" id="guess" min="1" max="100" />
+            <button onclick="checkGuess()"><i class="fas fa-check"></i> Submit Guess</button>
+            <div class="result" id="gameResult"></div>
+            <p>Attempts: <span id="attempts">0</span></p>
+          `;
+          break;
+          
+        case 'memory':
+          // Create memory game cards (8 pairs)
+          const symbols = ['🍎', '🍌', '🍒', '🍓', '🍊', '🍋', '🍐', '🍉'];
+          memoryCards = [...symbols, ...symbols];
+          matchedPairs = 0;
+          
+          // Shuffle cards
+          for (let i = memoryCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [memoryCards[i], memoryCards[j]] = [memoryCards[j], memoryCards[i]];
+          }
+          
+          container.innerHTML = `
+            <h4><i class="fas fa-brain"></i> Memory Game</h4>
+            <p>Find all matching pairs. Flip two cards at a time.</p>
+            <div class="memory-game" id="memoryGame"></div>
+            <p>Pairs found: <span id="pairsFound">0</span>/8</p>
+          `;
+          
+          const gameBoard = document.getElementById('memoryGame');
+          gameBoard.innerHTML = '';
+          
+          memoryCards.forEach((symbol, index) => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.index = index;
+            card.dataset.symbol = symbol;
+            card.innerHTML = '❓';
+            card.addEventListener('click', flipCard);
+            gameBoard.appendChild(card);
+          });
+          break;
+          
+        case 'quiz':
+          currentQuestion = 0;
+          quizScore = 0;
+          showQuizQuestion();
+          break;
+          
+        case 'typing':
+          container.innerHTML = `
+            <h4><i class="fas fa-keyboard"></i> Typing Test</h4>
+            <p>Type the following text as quickly and accurately as possible:</p>
+            <div style="background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+              ${typingText}
+            </div>
+            <textarea id="typingInput" rows="4" placeholder="Start typing here..."></textarea>
+            <button onclick="checkTyping()"><i class="fas fa-check"></i> Submit</button>
+            <div id="typingResult" style="margin-top: 1rem;"></div>
+          `;
+          document.getElementById('typingInput').focus();
+          typingStartTime = new Date();
+          break;
+          
+        case 'menu':
+        default:
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+              <h4><i class="fas fa-gamepad"></i> Select a Game</h4>
+              <p>Choose from the buttons above to start playing</p>
+            </div>
+          `;
+      }
+    }
+    
+    let attempts = 0;
+    function checkGuess() {
+      const guess = parseInt(document.getElementById('guess').value);
+      const result = document.getElementById('gameResult');
+      attempts++;
+      document.getElementById('attempts').textContent = attempts;
+      
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        result.textContent = 'Please enter a number between 1 and 100';
+        return;
+      }
+      
+      if (guess === secretNumber) {
+        result.innerHTML = `🎉 Correct! You guessed it in ${attempts} attempts.`;
+        document.getElementById('guess').disabled = true;
+      } else if (guess < secretNumber) {
+        result.textContent = 'Too low! Try again.';
+      } else {
+        result.textContent = 'Too high! Try again.';
+      }
+    }
+    
+    function flipCard() {
+      if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+        this.classList.add('flipped');
+        this.textContent = this.dataset.symbol;
+        flippedCards.push(this);
+        
+        if (flippedCards.length === 2) {
+          setTimeout(checkForMatch, 500);
+        }
+      }
+    }
+    
+    function checkForMatch() {
+      const [card1, card2] = flippedCards;
+      
+      if (card1.dataset.symbol === card2.dataset.symbol) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        matchedPairs++;
+        document.getElementById('pairsFound').textContent = matchedPairs;
+        
+        if (matchedPairs === 8) {
+          setTimeout(() => {
+            alert('Congratulations! You found all pairs!');
+          }, 300);
+        }
+      } else {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        card1.textContent = '❓';
+        card2.textContent = '❓';
+      }
+      
+      flippedCards = [];
+    }
+    
+    function showQuizQuestion() {
+      if (currentQuestion >= quizQuestions.length) {
+        document.getElementById('gameContainer').innerHTML = `
+          <h4><i class="fas fa-question-circle"></i> Quiz Results</h4>
+          <p>Your score: ${quizScore} out of ${quizQuestions.length}</p>
+          <p>Percentage: ${Math.round((quizScore / quizQuestions.length) * 100)}%</p>
+          <button onclick="showGame('quiz')"><i class="fas fa-redo"></i> Try Again</button>
+        `;
+        return;
+      }
+      
+      const question = quizQuestions[currentQuestion];
+      let optionsHTML = '';
+      
+      question.options.forEach((option, index) => {
+        optionsHTML += `
+          <div class="quiz-option" onclick="selectQuizOption(${index})">
+            ${String.fromCharCode(65 + index)}. ${option}
+          </div>
+        `;
+      });
+      
+      document.getElementById('gameContainer').innerHTML = `
+        <h4><i class="fas fa-question-circle"></i> Quick Quiz</h4>
+        <div class="progress-bar">
+          <div class="progress" style="width: ${(currentQuestion / quizQuestions.length) * 100}%"></div>
+        </div>
+        <p>Question ${currentQuestion + 1} of ${quizQuestions.length}</p>
+        <p><strong>${question.question}</strong></p>
+        ${optionsHTML}
+        <p>Score: ${quizScore}/${currentQuestion}</p>
+      `;
+    }
+    
+    function selectQuizOption(selectedIndex) {
+      const question = quizQuestions[currentQuestion];
+      const options = document.querySelectorAll('.quiz-option');
+      
+      // Disable all options
+      options.forEach(option => {
+        option.style.pointerEvents = 'none';
+      });
+      
+      // Mark correct/incorrect
+      if (selectedIndex === question.answer) {
+        options[selectedIndex].classList.add('correct');
+        quizScore++;
+      } else {
+        options[selectedIndex].classList.add('incorrect');
+        options[question.answer].classList.add('correct');
+      }
+      
+      // Move to next question after delay
+      setTimeout(() => {
+        currentQuestion++;
+        showQuizQuestion();
+      }, 1500);
+    }
+    
+    function checkTyping() {
+      const userText = document.getElementById('typingInput').value;
+      const endTime = new Date();
+      const timeTaken = (endTime - typingStartTime) / 1000; // in seconds
+      const words = typingText.split(' ').length;
+      const userWords = userText.split(' ').length;
+      
+      // Calculate words per minute
+      const wpm = Math.round((userWords / timeTaken) * 60);
+      
+      // Calculate accuracy
+      let correctChars = 0;
+      const minLength = Math.min(typingText.length, userText.length);
+      
+      for (let i = 0; i < minLength; i++) {
+        if (typingText[i] === userText[i]) {
+          correctChars++;
+        }
+      }
+      
+      const accuracy = Math.round((correctChars / typingText.length) * 100);
+      
+      document.getElementById('typingResult').innerHTML = `
+        <p>Time: ${timeTaken.toFixed(1)} seconds</p>
+        <p>Speed: ${wpm} words per minute</p>
+        <p>Accuracy: ${accuracy}%</p>
+        <button onclick="showGame('typing')" style="margin-top: 1rem;"><i class="fas fa-redo"></i> Try Again</button>
+      `;
+    }
+    
+    // Age Calculator Functions
+    function calculateAge() {
+      const dobInput = document.getElementById('dob').value;
+      
+      if (!dobInput) {
+        document.getElementById('ageResult').textContent = 'Please select your date of birth';
+        return;
+      }
+      
+      const dob = new Date(dobInput);
+      const today = new Date();
+      
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      
+      // Calculate months and days
+      let months, days;
+      
+      if (today.getMonth() >= dob.getMonth()) {
+        months = today.getMonth() - dob.getMonth();
+      } else {
+        months = 12 + today.getMonth() - dob.getMonth();
+      }
+      
+      if (today.getDate() >= dob.getDate()) {
+        days = today.getDate() - dob.getDate();
+      } else {
+        const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, dob.getDate());
+        days = Math.floor((today - lastMonth) / (1000 * 60 * 60 * 24));
+        months--;
+      }
+      
+      // Calculate next birthday
+      const nextBirthday = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+      if (today > nextBirthday) {
+        nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
+      }
+      const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+      
+      // Display results
+      document.getElementById('ageResult').innerHTML = `
+        You are <strong>${age}</strong> years, <strong>${months}</strong> months, and <strong>${days}</strong> days old.
+      `;
+      
+      const statsDiv = document.getElementById('ageStats');
+      statsDiv.style.display = 'block';
+      
+      document.getElementById('ageStatsList').innerHTML = `
+        <li>Born on: ${dob.toDateString()}</li>
+        <li>Next birthday in: ${daysUntilBirthday} days</li>
+        <li>Birthstone: ${getBirthstone(dob.getMonth())}</li>
+        <li>Zodiac: ${getZodiac(dob.getMonth(), dob.getDate())}</li>
+      `;
+    }
+    
+    function getBirthstone(month) {
+      const stones = [
+        'Garnet', 'Amethyst', 'Aquamarine', 'Diamond', 
+        'Emerald', 'Pearl', 'Ruby', 'Peridot', 
+        'Sapphire', 'Opal', 'Topaz', 'Turquoise'
+      ];
+      return stones[month];
+    }
+    
+    function getZodiac(month, day) {
+      if ((month === 0 && day >= 20) || (month === 1 && day <= 18)) return 'Aquarius';
+      if ((month === 1 && day >= 19) || (month === 2 && day <= 20)) return 'Pisces';
+      if ((month === 2 && day >= 21) || (month === 3 && day <= 19)) return 'Aries';
+      if ((month === 3 && day >= 20) || (month === 4 && day <= 20)) return 'Taurus';
+      if ((month === 4 && day >= 21) || (month === 5 && day <= 20)) return 'Gemini';
+      if ((month === 5 && day >= 21) || (month === 6 && day <= 22)) return 'Cancer';
+      if ((month === 6 && day >= 23) || (month === 7 && day <= 22)) return 'Leo';
+      if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return 'Virgo';
+      if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return 'Libra';
+      if ((month === 9 && day >= 23) || (month === 10 && day <= 21)) return 'Scorpio';
+      if ((month === 10 && day >= 22) || (month === 11 && day <= 21)) return 'Sagittarius';
+      return 'Capricorn';
+    }
+    
+    // Roadmaps Functions
+    function loadRoadmap(topic) {
+      const roadmap = document.getElementById('roadmap');
+      
+      switch(topic) {
+        case 'cs':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-laptop-code"></i> Computer Science Fundamentals</h4>
+              <ul class="roadmap-list">
+                <li>Programming Basics (Variables, Loops, Conditionals)</li>
+                <li>Data Structures (Arrays, Linked Lists, Trees, Graphs)</li>
+                <li>Algorithms (Sorting, Searching, Big-O Notation)</li>
+                <li>Object-Oriented Programming</li>
+                <li>Computer Architecture Basics</li>
+                <li>Operating Systems Concepts</li>
+                <li>Databases and SQL</li>
+                <li>Networking Fundamentals</li>
+              </ul>
+              <a href="https://teachyourselfcs.com/" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Teach Yourself Computer Science
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-code-branch"></i> Advanced Topics</h4>
+              <ul class="roadmap-list">
+                <li>Design Patterns</li>
+                <li>System Design</li>
+                <li>Distributed Systems</li>
+                <li>Compilers</li>
+                <li>Cybersecurity Basics</li>
+                <li>Artificial Intelligence</li>
+                <li>Machine Learning</li>
+                <li>Blockchain Concepts</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        case 'ds':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-chart-bar"></i> Data Science Roadmap</h4>
+              <ul class="roadmap-list">
+                <li>Python Programming (NumPy, Pandas)</li>
+                <li>Statistics and Probability</li>
+                <li>Data Visualization (Matplotlib, Seaborn)</li>
+                <li>Data Cleaning and Preprocessing</li>
+                <li>Exploratory Data Analysis</li>
+                <li>Machine Learning Basics (Scikit-learn)</li>
+                <li>SQL for Data Science</li>
+                <li>Big Data Tools (Spark, Hadoop)</li>
+              </ul>
+              <a href="https://github.com/AMAI-GmbH/AI-Expert-Roadmap" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> AI Expert Roadmap
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-brain"></i> Advanced Topics</h4>
+              <ul class="roadmap-list">
+                <li>Deep Learning (TensorFlow, PyTorch)</li>
+                <li>Natural Language Processing</li>
+                <li>Computer Vision</li>
+                <li>Time Series Analysis</li>
+                <li>Model Deployment</li>
+                <li>Cloud Platforms (AWS, GCP, Azure)</li>
+                <li>Data Engineering</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        case 'web':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-code"></i> Web Development Roadmap</h4>
+              <ul class="roadmap-list">
+                <li>HTML5 and Semantic HTML</li>
+                <li>CSS3 and Responsive Design</li>
+                <li>JavaScript Fundamentals</li>
+                <li>DOM Manipulation</li>
+                <li>Version Control (Git)</li>
+                <li>Frontend Frameworks (React, Vue, or Angular)</li>
+                <li>Node.js and Express</li>
+                <li>Database Integration (MongoDB, PostgreSQL)</li>
+              </ul>
+              <a href="https://roadmap.sh/frontend" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Frontend Developer Roadmap
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-server"></i> Advanced Topics</h4>
+              <ul class="roadmap-list">
+                <li>Authentication and Authorization</li>
+                <li>RESTful APIs</li>
+                <li>GraphQL</li>
+                <li>WebSockets</li>
+                <li>Testing (Jest, Cypress)</li>
+                <li>Web Performance Optimization</li>
+                <li>Web Security</li>
+                <li>DevOps Basics (Docker, CI/CD)</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        case 'mobile':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-mobile-alt"></i> Mobile Development Roadmap</h4>
+              <ul class="roadmap-list">
+                <li>Choose Platform: Native (iOS/Android) or Cross-platform</li>
+                <li>For iOS: Swift and SwiftUI</li>
+                <li>For Android: Kotlin and Jetpack Compose</li>
+                <li>Cross-platform: Flutter or React Native</li>
+                <li>Mobile UI/UX Principles</li>
+                <li>State Management</li>
+                <li>API Integration</li>
+                <li>App Publishing Process</li>
+              </ul>
+              <a href="https://roadmap.sh/android" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Android Developer Roadmap
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-tools"></i> Advanced Topics</h4>
+              <ul class="roadmap-list">
+                <li>Offline Capabilities</li>
+                <li>Push Notifications</li>
+                <li>Mobile Analytics</li>
+                <li>Performance Optimization</li>
+                <li>Security Best Practices</li>
+                <li>Testing (Unit, Integration, UI)</li>
+                <li>CI/CD for Mobile</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        case 'math':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-square-root-alt"></i> Mathematics Roadmap</h4>
+              <ul class="roadmap-list">
+                <li>Algebra Fundamentals</li>
+                <li>Geometry and Trigonometry</li>
+                <li>Calculus (Differential and Integral)</li>
+                <li>Linear Algebra</li>
+                <li>Discrete Mathematics</li>
+                <li>Probability and Statistics</li>
+                <li>Differential Equations</li>
+                <li>Numerical Methods</li>
+              </ul>
+              <a href="https://www.math.cmu.edu/~jmackey/151_128/better_math_roadmap.pdf" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Mathematics Roadmap PDF
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-brain"></i> Advanced Topics</h4>
+              <ul class="roadmap-list">
+                <li>Abstract Algebra</li>
+                <li>Real and Complex Analysis</li>
+                <li>Topology</li>
+                <li>Number Theory</li>
+                <li>Mathematical Logic</li>
+                <li>Combinatorics</li>
+                <li>Optimization Theory</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        case 'lang':
+          roadmap.innerHTML = `
+            <div class="roadmap-category">
+              <h4><i class="fas fa-language"></i> Language Learning Roadmap</h4>
+              <ul class="roadmap-list">
+                <li>Basic Vocabulary (1000 most common words)</li>
+                <li>Grammar Fundamentals</li>
+                <li>Pronunciation Practice</li>
+                <li>Listening Comprehension</li>
+                <li>Speaking Practice</li>
+                <li>Reading Simple Texts</li>
+                <li>Writing Short Paragraphs</li>
+              </ul>
+              <a href="https://www.fluentu.com/blog/learn/how-to-learn-a-language/" class="resource-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Language Learning Guide
+              </a>
+            </div>
+            
+            <div class="roadmap-category">
+              <h4><i class="fas fa-trophy"></i> Advanced Learning</h4>
+              <ul class="roadmap-list">
+                <li>Idiomatic Expressions</li>
+                <li>Cultural Context</li>
+                <li>Advanced Grammar</li>
+                <li>Specialized Vocabulary</li>
+                <li>Media Consumption (Movies, News)</li>
+                <li>Conversation Practice</li>
+                <li>Writing Essays/Reports</li>
+              </ul>
+            </div>
+          `;
+          break;
+          
+        default:
+          roadmap.innerHTML = '<p>Select a subject to view its roadmap.</p>';
+      }
+    }
+    
+    // Pomodoro Timer Functions
+    let pomodoroInterval;
+    let pomodoroSecondsLeft = 25 * 60;
+    let pomodoroIsRunning = false;
+    let pomodoroCount = 0;
+    let isBreakTime = false;
+    
+    function startPomodoro() {
+      if (pomodoroIsRunning) return;
+      
+      const workMinutes = parseInt(document.getElementById('workDuration').value) || 25;
+      const breakMinutes = parseInt(document.getElementById('breakDuration').value) || 5;
+      
+      if (!isBreakTime) {
+        pomodoroSecondsLeft = workMinutes * 60;
+      } else {
+        pomodoroSecondsLeft = breakMinutes * 60;
+      }
+      
+      pomodoroIsRunning = true;
+      document.getElementById('pomodoroStart').disabled = true;
+      document.getElementById('pomodoroPause').disabled = false;
+      
+      updatePomodoroDisplay();
+      
+      pomodoroInterval = setInterval(() => {
+        pomodoroSecondsLeft--;
+        updatePomodoroDisplay();
+        
+        if (pomodoroSecondsLeft <= 0) {
+          clearInterval(pomodoroInterval);
+          pomodoroIsRunning = false;
+          
+          if (!isBreakTime) {
+            // Work session completed
+            pomodoroCount++;
+            isBreakTime = true;
+            document.getElementById('pomodoroStatus').textContent = 'Break time!';
+            document.getElementById('pomodoroCount').textContent = `${pomodoroCount}/4`;
+            
+            if (pomodoroCount % 4 === 0) {
+              alert('Great job! Take a longer break (15-30 minutes).');
+            } else {
+              alert('Work session complete! Take a short break.');
+            }
+          } else {
+            // Break completed
+            isBreakTime = false;
+            document.getElementById('pomodoroStatus').textContent = 'Back to work!';
+            alert('Break over! Time to focus again.');
+          }
+          
+          document.getElementById('pomodoroStart').disabled = false;
+          document.getElementById('pomodoroPause').disabled = true;
+          updatePomodoroDisplay();
+        }
+      }, 1000);
+    }
+    
+    function pausePomodoro() {
+      clearInterval(pomodoroInterval);
+      pomodoroIsRunning = false;
+      document.getElementById('pomodoroStart').disabled = false;
+      document.getElementById('pomodoroPause').disabled = true;
+      document.getElementById('pomodoroStatus').textContent = 'Paused';
+    }
+    
+    function resetPomodoro() {
+      clearInterval(pomodoroInterval);
+      pomodoroIsRunning = false;
+      isBreakTime = false;
+      const workMinutes = parseInt(document.getElementById('workDuration').value) || 25;
+      pomodoroSecondsLeft = workMinutes * 60;
+      document.getElementById('pomodoroStart').disabled = false;
+      document.getElementById('pomodoroPause').disabled = true;
+      document.getElementById('pomodoroStatus').textContent = 'Ready to work!';
+      updatePomodoroDisplay();
+    }
+    
+    function updatePomodoroDisplay() {
+      const minutes = Math.floor(pomodoroSecondsLeft / 60);
+      const seconds = pomodoroSecondsLeft % 60;
+      
+      document.getElementById('pomodoroTimer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      const workMinutes = parseInt(document.getElementById('workDuration').value) || 25;
+      const breakMinutes = parseInt(document.getElementById('breakDuration').value) || 5;
+      const totalSeconds = isBreakTime ? breakMinutes * 60 : workMinutes * 60;
+      const percentage = 100 - (pomodoroSecondsLeft / totalSeconds * 100);
+      
+      document.getElementById('pomodoroProgress').style.width = `${percentage}%`;
+    }
+    
+    // Notes Functions
+    function saveNote() {
+      const title = document.getElementById('noteTitle').value.trim();
+      const content = document.getElementById('noteInput').value.trim();
+      
+      if (!content) {
+        alert('Please write something before saving!');
+        return;
+      }
+      
+      const notes = JSON.parse(localStorage.getItem('studentNotes')) || [];
+      const now = new Date();
+      
+      const note = {
+        id: Date.now(),
+        title: title || `Note ${notes.length + 1}`,
+        content,
+        date: now.toLocaleString()
+      };
+      
+      notes.unshift(note); // Add new note to beginning
+      localStorage.setItem('studentNotes', JSON.stringify(notes));
+      
+      displaySavedNotes();
+      document.getElementById('noteInput').value = '';
+      document.getElementById('noteTitle').value = '';
+    }
+    
+    function clearNote() {
+      if (confirm('Are you sure you want to clear this note?')) {
+        document.getElementById('noteInput').value = '';
+        document.getElementById('noteTitle').value = '';
+      }
+    }
+    
+    function displaySavedNotes() {
+      const notes = JSON.parse(localStorage.getItem('studentNotes')) || [];
+      const container = document.getElementById('savedNotes');
+      
+      if (notes.length === 0) {
+        container.innerHTML = '<p>No notes saved yet. Start by writing a note and clicking "Save Note".</p>';
+        return;
+      }
+      
+      container.innerHTML = '';
+      
+      notes.forEach(note => {
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'note-card';
+        noteDiv.innerHTML = `
+          <h4>${note.title}</h4>
+          <small>${note.date}</small>
+          <p>${note.content.replace(/\n/g, '<br>')}</p>
+          <button onclick="deleteNote(${note.id})" class="danger" style="margin-top: 0.5rem;">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        `;
+        container.appendChild(noteDiv);
+      });
+    }
+    
+    function deleteNote(id) {
+      if (confirm('Are you sure you want to delete this note?')) {
+        let notes = JSON.parse(localStorage.getItem('studentNotes')) || [];
+        notes = notes.filter(note => note.id !== id);
+        localStorage.setItem('studentNotes', JSON.stringify(notes));
+        displaySavedNotes();
+      }
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      displaySavedNotes();
+      
+      // Set default work duration for pomodoro
+      document.getElementById('workDuration').addEventListener('change', function() {
+        if (!pomodoroIsRunning && !isBreakTime) {
+          pomodoroSecondsLeft = this.value * 60;
+          updatePomodoroDisplay();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
